@@ -1,0 +1,29 @@
+
+<template>
+  <nav class="bg-gray-300 shadow">
+  <div class="max-w-7xl mx-auto pr-4 sm:pr-6 lg:pr-8 flex items-center justify-between h-16">
+      <!-- Logo e icono -->
+      <div class="flex items-left px-4">
+        <img class="h-8 w-8 mr-2" src="/favicon.png" alt="Logo" sizes="200x200" />
+        <span class="font-bold text-xl text-gray-900">IA+Inv</span>
+      </div>
+      <!-- Links de navegación centrados -->
+      <div class="flex flex-1 justify-center space-x-4">
+        <a href="#" class="text-gray-900 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Sobre Nosotros</a>
+        <a href="#" class="text-gray-900 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Proyectos</a>
+        <a href="#" class="text-gray-900 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Contacto</a>
+        <a href="#" class="text-gray-900 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Precing</a>
+      </div>
+      <!-- Icono y botones de sesión -->
+  <div class="flex items-center space-x-3.5">
+        <!-- Icono de usuario (Heroicons) -->
+  <img src="/login.png" alt="Login" class="w-8 h-8" />
+  <span class="text-gray-700 text-sm font-medium mr-4">Inicia sesión</span>
+  <button class="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 text-sm font-medium ml-6">Registrarse</button>
+      </div>
+    </div>
+  </nav>
+  <div class="w-full h-0.5 bg-blue-600"></div>
+</template>
+
+
