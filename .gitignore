@@ -1,0 +1,21 @@
+# Ignorar dependencias de Node.js
+node_modules/
+
+# Ignorar archivos de compilación de TypeScript
+*.tsbuildinfo
+
+# Ignorar archivos de entorno
+.env
+
+# Ignorar logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorar directorios de producción
+/dist
+/build
+
+# Ignorar archivos del sistema
+.DS_Store
+Thumbs.db
