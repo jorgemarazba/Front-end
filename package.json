@@ -25,12 +25,14 @@
     "@heroicons/vue": "^2.2.0",
     "@vee-validate/zod": "^4.15.1",
     "axios": "^1.11.0",
+    "lucide-vue-next": "^0.539.0",
     "pinia": "^3.0.3",
+    "shadcn-vue": "^2.2.0",
     "toastification": "^0.1.5",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
-    "vue-toastification": "^1.7.14",
+    "vue-toastification": "^2.0.0-rc.5",
     "zod": "^3.24.0"
   },
   "scripts": {
