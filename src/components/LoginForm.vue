@@ -35,11 +35,14 @@ const password = ref('');
 
 const onLoginSubmit = async () => {
   try {
-    const body = {
-      username: email.value,
-      password: password.value,
-    };
-    const response = await axios.post<Token>('http://localhost:8000/api/auth/login', body);
+    const body = new URLSearchParams();
+    body.append('username', email.value);
+    body.append('password', password.value);
+    const response = await axios.post<Token>(
+      'http://127.0.0.1:8000/api/v1/auth/login',
+      body,
+      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
     localStorage.setItem('access_token', response.data.access_token);
     localStorage.setItem('refresh_token', response.data.refresh_token);
     toast.success('¡Login exitoso!');
