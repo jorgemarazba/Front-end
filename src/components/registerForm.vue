@@ -10,88 +10,49 @@
     </div>
     <form @submit.prevent="onSubmit">
       <div v-if="step === 1" class="space-y-4">
-        <div>
-          <label class="block mb-1 font-medium text-black" for="name">Nombre</label>
-          <Field name="name" v-slot="{ field, errors }">
-            <input v-bind="field" id="name" type="text" autocomplete="given-name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
-        </div>
-        <div>
-          <label class="block mb-1 font-medium text-black" for="lastname">Apellidos</label>
-          <Field name="lastname" v-slot="{ field, errors }">
-            <input v-bind="field" id="lastname" type="text" autocomplete="family-name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
-        </div>
+          <div>
+            <label class="block mb-1 font-medium text-black" for="full_name">Nombre completo</label>
+            <input v-model="full_name" id="full_name" type="text" autocomplete="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="phone">Teléfono</label>
-          <Field name="phone" v-slot="{ field, errors }">
-            <input v-bind="field" id="phone" type="text" autocomplete="tel" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
+          <input v-model="phone" id="phone" type="text" autocomplete="tel" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
       </div>
       <div v-else-if="step === 2" class="space-y-4 text-black">
         <div>
           <label class="block mb-1 font-medium text-black" for="institution">Institución</label>
-          <Field name="institution" v-slot="{ field, errors }">
-            <input v-bind="field" id="institution" type="text" autocomplete="organization" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
+          <input v-model="institution" id="institution" type="text" autocomplete="organization" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="career">Carrera</label>
-          <Field name="career" v-slot="{ field, errors }">
-            <input v-bind="field" id="career" type="text" autocomplete="organization-title" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
+          <input v-model="career" id="career" type="text" autocomplete="organization-title" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="seedbed">Semillero</label>
-          <Field name="seedbed" v-slot="{ field, errors }">
-            <input v-bind="field" id="seedbed" type="text" autocomplete="off" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
+          <input v-model="seedbed" id="seedbed" type="text" autocomplete="off" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
       </div>
       <div v-else-if="step === 3" class="space-y-4 text-black">
         <div>
           <label class="block mb-1 font-medium text-black" for="email">Email</label>
-          <Field name="email" v-slot="{ field, errors }">
-            <input v-bind="field" id="email" type="email" autocomplete="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
+          <input v-model="email" id="email" type="email" autocomplete="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="password">Contraseña</label>
-          <Field name="password" v-slot="{ field, errors }">
-            <input v-bind="field" id="password" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
+          <input v-model="password" id="password" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="confirmPassword">Repetir contraseña</label>
-          <Field name="confirmPassword" v-slot="{ field, errors }">
-            <input v-bind="field" id="confirmPassword" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
-            <span class="text-red-400 text-xs">{{ errors[0] }}</span>
-          </Field>
+          <input v-model="confirmPassword" id="confirmPassword" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
       </div>
       <div class="flex justify-between gap-x-4 mt-6">
-  <Button v-if="step > 1" variant="outline" @click="handleBack" class="text-black px-4 py-1 text-base">Regresar</Button>
+        <Button v-if="step > 1" variant="outline" @click="handleBack" class="text-black px-4 py-1 text-base">Regresar</Button>
         <Button
           v-if="step < 3"
-          variant="default"
-          @click="async () => {
-    await validate();
-    if (step === 1) {
-      if (!errors.name && !errors.lastname && !errors.phone && values.name && values.lastname && values.phone) step++;
-    } else if (step === 2) {
-      if (!errors.institution && !errors.career && !errors.seedbed && values.institution && values.career && values.seedbed) step++;
-    }
-  }"
           class="text-black px-4 py-1 text-base"
+          @click="() => { step++; }"
         >
           Siguiente
         </Button>
@@ -102,62 +63,26 @@
 </template>
 
 <script setup lang="ts">
-import { useForm, Field } from 'vee-validate';
-import { z } from 'zod';
-import { toFormValidator } from '@vee-validate/zod';
+// ...existing code...
 import { useToast } from 'vue-toastification';
 import axios from 'axios';
 import { ref } from 'vue';
 import Button from '@/components/ui/Button.vue';
 import { ArrowLeft } from 'lucide-vue-next';
+import type { UserCreate } from '../types';
 
 const toast = useToast();
 
-const schema = z
-  .object({
-    name: z.string().min(2, 'El nombre es obligatorio'),
-    lastname: z.string().min(2, 'Los apellidos son obligatorios'),
-    phone: z
-      .string()
-      .regex(/^\+57[13-8]\d{7,9}$|^\+573\d{9}$/,
-        'El número debe tener formato colombiano válido: +57 seguido del número (ej: +573001234567 para móvil, +5714567890 para fijo)'
-      ),
-    institution: z.string().min(2, 'La institución es obligatoria'),
-    career: z.string().min(2, 'La carrera es obligatoria'),
-    seedbed: z.string().min(2, 'El semillero es obligatorio'),
-    email: z.string().email('Email inválido'),
-    password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
-    confirmPassword: z.string().min(6, 'Repite la contraseña'),
-  })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.confirmPassword) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Las contraseñas no coinciden',
-        path: ['confirmPassword'],
-      });
-    }
-  });
-
-const { handleSubmit, validate, values, errors, setFieldError } = useForm({
-  validationSchema: toFormValidator(schema),
-});
-
 const step = ref(1);
 
-const fieldNames: Array<
-  'name' | 'lastname' | 'phone' | 'institution' | 'career' | 'seedbed' | 'email' | 'password' | 'confirmPassword'
-> = [
-  'name',
-  'lastname',
-  'phone',
-  'institution',
-  'career',
-  'seedbed',
-  'email',
-  'password',
-  'confirmPassword',
-];
+const full_name = ref('');
+const phone = ref('');
+const institution = ref('');
+const career = ref('');
+const seedbed = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
 
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -167,19 +92,40 @@ function handleBack() {
     router.push('/');
   } else {
     step.value--;
-    // Limpiar errores solo de los campos válidos
-    fieldNames.forEach((key) => setFieldError(key, undefined));
   }
 }
 
-const onSubmit = handleSubmit(async (values) => {
-  try {
-    await axios.post('/auth/register', values);
-    toast.success('¡Registro exitoso!');
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || 'Error en el registro');
+async function onSubmit() {
+  if (password.value !== confirmPassword.value) {
+    toast.error('Las contraseñas no coinciden');
+    return;
   }
-});
+  const payload: UserCreate = {
+    email: email.value,
+    full_name: full_name.value,
+    password: password.value,
+    phone_number: phone.value,
+    university: institution.value || null,
+    research_group: seedbed.value || null,
+    career: career.value || null,
+  };
+  try {
+    console.log('Enviando registro:', payload);
+  await axios.post('http://127.0.0.1:8000/api/v1/auth/register', payload);
+    toast.success('¡Registro exitoso! Ahora inicia sesión.');
+    router.push('/login');
+  } catch (error: any) {
+    console.error('Error en el registro:', error?.response?.data);
+    const apiError = error?.response?.data;
+    if (apiError?.detail && Array.isArray(apiError.detail)) {
+      apiError.detail.forEach((err: any) => {
+        toast.error(err.msg || 'Error de validación');
+      });
+    } else {
+      toast.error(apiError?.message || 'Error en el registro. Verifica los datos o si el usuario ya existe.');
+    }
+  }
+}
 </script>
 
 <style>

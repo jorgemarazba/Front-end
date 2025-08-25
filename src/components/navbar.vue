@@ -17,7 +17,7 @@
       <div class="flex items-center space-x-3.5">
         <!-- Icono de usuario (Heroicons) -->
         <img src="/login.png" alt="Login" class="w-8 h-8" />
-        <span class="text-gray-700 text-sm font-medium mr-4">Inicia sesión</span>
+  <router-link to="/login" class="text-gray-700 text-sm font-medium mr-4 hover:underline cursor-pointer">Inicia sesión</router-link>
         <router-link to="/register" class="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 text-sm font-medium ml-6">Registrarse</router-link>
       </div>
     </div>
