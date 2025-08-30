@@ -122,7 +122,7 @@ async function onSubmit() {
         toast.error(err.msg || 'Error de validación');
       });
     } else {
-      toast.error(apiError?.message || 'Error en el registro. Verifica los datos o si el usuario ya existe.');
+      toast.error(apiError?.detail || 'Error en el registro. Verifica los datos o si el usuario ya existe.');
     }
   }
 }

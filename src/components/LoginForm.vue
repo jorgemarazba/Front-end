@@ -48,7 +48,14 @@ const onLoginSubmit = async () => {
     toast.success('¡Login exitoso!');
   router.push('/laboratorio');
   } catch (error: any) {
-    toast.error(error?.response?.data?.message || 'Error en el login');
+    const apiError = error?.response?.data;
+    if (apiError?.detail && Array.isArray(apiError.detail)) {
+      apiError.detail.forEach((err: any) => {
+        toast.error(err.msg || 'Error de validación');
+      });
+    } else {
+      toast.error(apiError?.detail || 'Error en el login, verifica los datos ingresados.');
+    }
   }
 };
 </script>
