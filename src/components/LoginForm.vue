@@ -46,7 +46,7 @@ const onLoginSubmit = async () => {
     localStorage.setItem('access_token', response.data.access_token);
     localStorage.setItem('refresh_token', response.data.refresh_token);
     toast.success('¡Login exitoso!');
-    router.push('/dashboard');
+  router.push('/laboratorio');
   } catch (error: any) {
     toast.error(error?.response?.data?.message || 'Error en el login');
   }

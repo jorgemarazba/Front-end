@@ -11,6 +11,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/Dashboard.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/laboratorio',
+    component: () => import('../views/Laboratorio.vue'),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({
@@ -19,7 +24,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _unused, next) => {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('access_token');
   if (to.meta.requiresAuth && !token) {
     next('/login');
   } else {
