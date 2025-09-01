@@ -12,39 +12,39 @@
       <div v-if="step === 1" class="space-y-4">
           <div>
             <label class="block mb-1 font-medium text-black" for="full_name">Nombre completo</label>
-            <input v-model="full_name" id="full_name" type="text" autocomplete="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+            <input v-model="full_name" id="full_name" name="full_name" type="text" autocomplete="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
           </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="phone">Teléfono</label>
-          <input v-model="phone" id="phone" type="text" autocomplete="tel" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          <input v-model="phone" id="phone" name="phone" type="text" autocomplete="tel" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
       </div>
       <div v-else-if="step === 2" class="space-y-4 text-black">
         <div>
           <label class="block mb-1 font-medium text-black" for="institution">Institución</label>
-          <input v-model="institution" id="institution" type="text" autocomplete="organization" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          <input v-model="institution" id="institution" name="institution" type="text" autocomplete="organization" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="career">Carrera</label>
-          <input v-model="career" id="career" type="text" autocomplete="organization-title" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          <input v-model="career" id="career" name="career" type="text" autocomplete="organization-title" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="seedbed">Semillero</label>
-          <input v-model="seedbed" id="seedbed" type="text" autocomplete="off" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          <input v-model="seedbed" id="seedbed" name="seedbed" type="text" autocomplete="off" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
       </div>
       <div v-else-if="step === 3" class="space-y-4 text-black">
         <div>
           <label class="block mb-1 font-medium text-black" for="email">Email</label>
-          <input v-model="email" id="email" type="email" autocomplete="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          <input v-model="email" id="email" name="email" type="email" autocomplete="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="password">Contraseña</label>
-          <input v-model="password" id="password" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          <input v-model="password" id="password" name="password" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="confirmPassword">Repetir contraseña</label>
-          <input v-model="confirmPassword" id="confirmPassword" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
+          <input v-model="confirmPassword" id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" />
         </div>
       </div>
       <div class="flex justify-between gap-x-4 mt-6">
@@ -122,7 +122,7 @@ async function onSubmit() {
         toast.error(err.msg || 'Error de validación');
       });
     } else {
-      toast.error(apiError?.detail || 'Error en el registro. Verifica los datos o si el usuario ya existe.');
+      toast.error(apiError?.message || 'Error en el registro. Verifica los datos o si el usuario ya existe.');
     }
   }
 }

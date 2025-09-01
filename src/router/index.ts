@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/login', component: () => import('../views/Login.vue') },
   {
     path: '/dashboard',
-    component: () => import('../views/Dashboard.vue'),
+    component: () => import('../views/LaboratorioIN.vue'),
     meta: { requiresAuth: true },
   },
   {

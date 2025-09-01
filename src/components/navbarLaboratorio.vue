@@ -10,7 +10,7 @@
       </div>
       <!-- Botón, barra de búsqueda y texto centrados -->
       <div class="flex items-center justify-center flex-1 gap-4">
-  <button @click="$emit('crear-proyecto')" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 text-sm font-medium">Crear nuevo proyecto</button>
+  <button @click="$emit('crearProyecto')" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 text-sm font-medium">Crear nuevo proyecto</button>
   <span class="font-bold text-2xl text-blue-200 ml-8">Laboratorio de Proyectos</span>
       </div>
       <!-- Barra de búsqueda junto al menú de usuario -->
@@ -47,6 +47,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const menuOpen = ref(false);
+const emit = defineEmits(['crearProyecto']);
 
 // Datos de usuario simulados (puedes reemplazar por los reales)
 const userName = ref('Persona Ejemplo');

@@ -5,11 +5,11 @@
       <div class="space-y-4">
         <div>
           <label class="block mb-1 font-medium text-black" for="email">Email</label>
-          <input v-model="email" id="email" type="email" autocomplete="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" required />
+          <input v-model="email" id="email" name="email" type="email" autocomplete="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" required />
         </div>
         <div>
           <label class="block mb-1 font-medium text-black" for="password">Contraseña</label>
-          <input v-model="password" id="password" type="password" autocomplete="current-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" required />
+          <input v-model="password" id="password" name="password" type="password" autocomplete="current-password" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900" required />
         </div>
       </div>
       <div class="flex justify-end mt-6">
