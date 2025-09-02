@@ -102,14 +102,9 @@ async function onSubmit() {
     const response = await axios.post('http://127.0.0.1:8000/api/v1/proyectos/', payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    emit('created', response.data);
-  newInvestigation.value = '';
-  description.value = '';
-  research_type.value = '';
-  institution.value = '';
-  research_group.value = '';
-  category.value = '';
-  status.value = 'planning';
+  emit('created', response.data);
+  emit('close'); // Cierra el modal inmediatamente después de crear
+  // No limpiar los campos manualmente, el modal se cierra y el proyecto aparece en la lista
   } catch (error) {
     alert('Error al crear el proyecto. Verifica los datos e intenta nuevamente.');
     const err = error as any;

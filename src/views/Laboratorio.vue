@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-[#666361] min-h-screen w-full flex overflow-hidden">
+  <div class="bg-[#666361] min-h-screen w-full flex" style="overflow: hidden;">
     <!-- Sidebar -->
-  <aside class="w-64 bg-[#222] text-white min-h-screen p-6 flex flex-col gap-6 fixed top-16 left-0">
+  <aside class="w-64 bg-[#222] text-white min-h-screen p-6 flex flex-col gap-6 fixed top-16 left-0 rounded-r-2xl">
       <div class="flex items-center gap-2 mb-6">
         <!-- Icono de proyectos -->
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m16-2v2a4 4 0 004 4h.01a4 4 0 004-4v-2m-8-6a4 4 0 100-8 4 4 0 000 8zm0 0v6" /></svg>
-        <span class="font-bold text-xl">Tus proyectos</span>
+        <span class="font-bold text-xl">Tus Proyectos</span>
       </div>
       <nav class="flex flex-col gap-2">
         <div>
@@ -18,6 +18,7 @@
             Favoritos
           </button>
         </div>
+        <hr class="border-t border-gray-600 my-2" />
         <div>
           <button class="w-full text-left px-4 py-2 rounded hover:bg-blue-600 font-semibold" @click="mostrarBibliografias = !mostrarBibliografias">
             Tus bibliografías
@@ -39,7 +40,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
           <span class="font-bold text-xl text-white">Proyectos recientes</span>
         </div>
-  <div class="w-full flex justify-center overflow-hidden">
+  <div class="w-full flex justify-center">
           <Carousel
             :items-to-show="3"
             :wrap-around="projects.length > 3"
@@ -48,7 +49,7 @@
             class="mb-6 w-full max-w-[calc(100vw-16rem)] px-4"
           >
             <Slide v-for="project in projects" :key="project.id" :snap-align="'start'">
-              <div class="bg-[#444] text-white rounded shadow p-2 flex flex-col gap-2 w-full h-[150px] justify-center items-center mx-1 transition-all duration-300">
+              <div class="bg-[#444] text-white rounded shadow p-2 flex flex-col gap-2 w-full h-[150px] justify-center items-center mx-1 transition-all duration-300" style="background-image: url('/fondo card.jpg'); background-size: cover; background-position: center;">
                 <strong class="text-xl">{{ project.name }}</strong>
                 <span v-if="project.status" class="text-base text-blue-300">({{ project.status }})</span>
                 <div v-if="project.description" class="text-base text-gray-200 text-center">{{ project.description }}</div>
@@ -63,6 +64,10 @@
 </template>
 
 <script setup lang="ts">
+// Forzar el body a ocultar el scroll vertical
+if (typeof window !== 'undefined') {
+  document.body.style.overflowY = 'hidden';
+}
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import CreateProjectForm from '@/components/CreateProjectForm.vue';
