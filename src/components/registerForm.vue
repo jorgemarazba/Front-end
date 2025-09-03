@@ -1,12 +1,16 @@
 <template>
   <div
-    class="max-w-md mx-auto p-8 rounded-lg shadow-lg border border-black bg-white text-black"
+    class="w-full max-w-xl mx-auto p-12 rounded-3xl shadow-2xl bg-white text-black"
   >
-    <div class="mb-8 relative">
-  <Button v-if="step === 1" variant="outline" class="absolute left-0 top-0" style="z-index:2;" @click="handleBack">
-    <ArrowLeft class="w-6 h-6" />
-  </Button>
-  <h2 class="text-2xl font-bold ml-14 mt-2">Registro de nuevos usuario</h2>
+    <div class="mb-8 relative flex flex-col items-center gap-2">
+      <Button v-if="step === 1" variant="outline" class="absolute left-0 top-0" style="z-index:2;" @click="handleBack">
+        <ArrowLeft class="w-6 h-6" />
+      </Button>
+      <!-- Logo registro -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+      </svg>
+      <h2 class="text-2xl font-bold ml-14 mt-2">Registro de nuevos usuario</h2>
     </div>
     <form @submit.prevent="onSubmit">
       <div v-if="step === 1" class="space-y-4">
