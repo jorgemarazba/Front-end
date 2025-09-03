@@ -1,6 +1,5 @@
 <template>
   <div class="mt-12 w-full flex flex-wrap justify-center gap-6">
-    <span class="text-2xl font-bold mb-4 w-full text-center">Carreras Profesionales</span>
     <ul class="flex flex-wrap justify-center gap-6 w-full">
       <li class="text-lg px-4 py-2 bg-gray-100 rounded shadow">Ingeniería Civil</li>
       <li class="text-lg px-4 py-2 bg-gray-100 rounded shadow">Ingeniería de Sistemas</li>
