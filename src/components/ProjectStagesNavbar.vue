@@ -16,13 +16,13 @@
           </div>
         </div>
         <!-- Menú de usuario -->
-        <div class="flex items-center space-x-3.5 relative">
+        <div ref="userMenuContainer" class="flex items-center space-x-3.5 relative">
           <button class="flex items-center gap-2 focus:outline-none" @click="toggleMenu">
             <div :style="{ backgroundColor: userColor }" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl">
               {{ userInitial }}
             </div>
           </button>
-          <div v-if="menuOpen" class="absolute right-0 mt-2 w-64 bg-white rounded shadow-lg py-4 z-50">
+          <div v-if="menuOpen" class="absolute right-0 mt-2 w-64 bg-white rounded shadow-lg py-4 z-[9999]">
             <div class="flex flex-col items-center mb-4">
               <div :style="{ backgroundColor: userColor }" class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-2xl mb-2">
                 {{ userInitial }}
@@ -30,9 +30,9 @@
               <span class="font-semibold text-lg" :style="{ color: userColor }">{{ userName }}</span>
               <span class="text-gray-500 text-sm">{{ userEmail }}</span>
             </div>
-            <router-link to="/laboratorio" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Inicio</router-link>
-            <router-link to="/perfil" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Perfil</router-link>
-            <router-link to="/configuracion" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Configuración</router-link>
+            <router-link to="/laboratorio" @click="menuOpen = false" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Inicio</router-link>
+            <router-link to="/perfil" @click="menuOpen = false" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Perfil</router-link>
+            <router-link to="/configuracion" @click="menuOpen = false" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Configuración</router-link>
             <button @click="logout" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Cerrar sesión</button>
           </div>
         </div>
@@ -206,7 +206,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Props
@@ -223,6 +223,7 @@ const emit = defineEmits(['crearEtapa']);
 const router = useRouter();
 const menuOpen = ref(false);
 const modalEtapasOpen = ref(false);
+const userMenuContainer = ref(null);
 
 // Datos de usuario simulados (puedes reemplazar por los reales)
 const userName = ref('Persona Ejemplo');
@@ -263,13 +264,17 @@ function goToLaboratorio() {
 }
 
 function handleClickOutside(event) {
-  const menu = document.querySelector('.relative');
-  if (menu && !menu.contains(event.target)) {
+  if (userMenuContainer.value && !userMenuContainer.value.contains(event.target)) {
     menuOpen.value = false;
   }
 }
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 function logout() {
   localStorage.removeItem('access_token');
