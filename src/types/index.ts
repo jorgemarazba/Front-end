@@ -117,3 +117,80 @@ export interface ValidationError {
   msg: string;
   type: string;
 }
+
+// Tipos para el sistema Kanban
+export interface KanbanTask {
+  id: number;
+  title: string;
+  description?: string;
+  phase_id: number;
+  project_id: number;
+  position: number;
+  created_at: string;
+  updated_at: string;
+  due_date?: string;
+  priority?: 'low' | 'medium' | 'high';
+  assignee?: string;
+  tags?: string[];
+}
+
+export interface KanbanPhase {
+  id: number;
+  name: string;
+  description?: string;
+  color: string;
+  position: number;
+  project_id: number;
+  tasks: KanbanTask[];
+  task_count?: number;
+}
+
+export interface KanbanBoard {
+  id: number;
+  project_id: number;
+  phases: KanbanPhase[];
+  created_at: string;
+  updated_at: string;
+}
+
+// Tipos para operaciones CRUD del Kanban
+export interface CreateTaskRequest {
+  title: string;
+  description?: string;
+  phase_id: number;
+  due_date?: string;
+  priority?: 'low' | 'medium' | 'high';
+  assignee?: string;
+  tags?: string[];
+}
+
+export interface UpdateTaskRequest {
+  title?: string;
+  description?: string;
+  phase_id?: number;
+  position?: number;
+  due_date?: string;
+  priority?: 'low' | 'medium' | 'high';
+  assignee?: string;
+  tags?: string[];
+}
+
+export interface MoveTaskRequest {
+  task_id: number;
+  target_phase_id: number;
+  new_position: number;
+}
+
+export interface CreatePhaseRequest {
+  name: string;
+  description?: string;
+  color: string;
+  position: number;
+}
+
+export interface UpdatePhaseRequest {
+  name?: string;
+  description?: string;
+  color?: string;
+  position?: number;
+}

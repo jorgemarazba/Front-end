@@ -42,7 +42,9 @@
         </div>
         <div class="flex justify-end gap-2 mt-4">
           <Button type="button" variant="outline" @click="$emit('close')">Cancelar</Button>
-          <Button type="submit" variant="default">Crear</Button>
+          <Button type="submit" variant="default" :disabled="isSubmitting">
+            {{ isSubmitting ? 'Creando...' : 'Crear' }}
+          </Button>
         </div>
       </form>
     </div>
@@ -62,8 +64,9 @@ const institution = ref('');
 const research_group = ref('');
 const category = ref('');
 const status = ref('planning');
+const isSubmitting = ref(false);
 
-const emit = defineEmits(['close', 'created']);
+const emit = defineEmits(['close', 'created', 'refresh']);
 const toast = useToast();
 
 function isTokenExpired(token: string): boolean {
@@ -88,6 +91,9 @@ async function onSubmit() {
     emit('close');
     return;
   }
+  
+  // Mostrar loading inmediatamente
+  isSubmitting.value = true;
   try {
     const payload = {
       name: newInvestigation.value,
@@ -102,15 +108,23 @@ async function onSubmit() {
     const response = await axios.post('http://127.0.0.1:8000/api/v1/proyectos/', payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
-  emit('created', response.data);
-  emit('close'); // Cierra el modal inmediatamente después de crear
-  // No limpiar los campos manualmente, el modal se cierra y el proyecto aparece en la lista
+    
+    // El proyecto ya viene completo en la respuesta del POST
+    emit('created', response.data);
+    emit('refresh');
+    
+    // Pequeño delay para asegurar que los eventos se procesen antes de cerrar
+    setTimeout(() => {
+      emit('close');
+    }, 50);
   } catch (error) {
     alert('Error al crear el proyecto. Verifica los datos e intenta nuevamente.');
     const err = error as any;
     if (err.response) {
       console.error('Respuesta error backend:', JSON.stringify(err.response.data, null, 2));
     }
+  } finally {
+    isSubmitting.value = false;
   }
 }
 </script>

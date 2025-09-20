@@ -16,6 +16,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/Laboratorio.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/proyecto/:id',
+    name: 'ProjectDetail',
+    component: () => import('../views/KanbanBoard.vue'),
+    meta: { requiresAuth: true },
+    props: true,
+  },
 ];
 
 const router = createRouter({
