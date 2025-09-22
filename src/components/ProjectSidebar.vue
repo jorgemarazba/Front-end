@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <!-- 4. Carreras profesionales -->
+    <!-- 4. Áreas de Investigación -->
     <div class="mb-8">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold text-white">Áreas de Investigación</h3>
@@ -93,21 +93,32 @@
         </button>
       </div>
       
-      <div v-show="areasExpanded" class="space-y-3">
-        <div 
-          v-for="carrera in carreras" 
-          :key="carrera.id"
-          class="flex items-center justify-between p-2 hover:bg-gray-800 rounded"
-        >
-          <!-- Nombre de la carrera -->
-          <span class="text-sm text-gray-200">{{ carrera.nombre }}</span>
-          
-          <!-- Número redondeado con color aleatorio -->
+      <div v-show="areasExpanded" class="space-y-2">
+        <!-- Primera fila: 2 columnas -->
+        <div class="grid grid-cols-2 gap-2">
           <div 
-            class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-            :style="{ backgroundColor: carrera.color }"
+            v-for="carrera in carreras.slice(0, 2)" 
+            :key="carrera.id"
+            class="flex justify-center"
           >
-            {{ carrera.usos }}
+            <span
+              class="rounded transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-lg text-sm text-white font-medium whitespace-nowrap"
+              :style="{ backgroundColor: carrera.color }"
+            >{{ carrera.nombre }}</span>
+          </div>
+        </div>
+        
+        <!-- Resto de filas: 3 columnas cada una -->
+        <div class="grid grid-cols-3 gap-2">
+          <div 
+            v-for="carrera in carreras.slice(2)" 
+            :key="carrera.id"
+            class="flex justify-center"
+          >
+            <span
+              class="rounded transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-lg text-sm text-white font-medium whitespace-nowrap"
+              :style="{ backgroundColor: carrera.color }"
+            >{{ carrera.nombre }}</span>
           </div>
         </div>
       </div>
@@ -188,14 +199,24 @@ const areasExpanded = ref(true); // Por defecto expandido
 // Proyectos activos (se cargarán desde la API)
 const proyectosActivos = ref<Array<{id: number, nombre: string, color: string}>>([]);
 
-// Carreras profesionales (se cargarán desde la API o configuración)
+// Áreas de investigación optimizadas para aprovechar el espacio
 const carreras = ref([
-  { id: 1, nombre: 'Ingeniería de Sistemas', usos: 12, color: '#3B82F6' },
-  { id: 2, nombre: 'Ingeniería Industrial', usos: 8, color: '#EF4444' },
-  { id: 3, nombre: 'Administración', usos: 5, color: '#10B981' },
+  { id: 1, nombre: 'Ing. de Sistemas', usos: 12, color: '#3B82F6' },
+  { id: 2, nombre: 'Ing. Industrial', usos: 8, color: '#EF4444' },
+  { id: 3, nombre: 'Admin. de Empresas', usos: 5, color: '#10B981' },
   { id: 4, nombre: 'Psicología', usos: 3, color: '#F59E0B' },
   { id: 5, nombre: 'Medicina', usos: 7, color: '#8B5CF6' },
   { id: 6, nombre: 'Derecho', usos: 2, color: '#EC4899' },
+  { id: 7, nombre: 'Contaduría', usos: 4, color: '#06B6D4' },
+  { id: 8, nombre: 'Arquitectura', usos: 6, color: '#84CC16' },
+  { id: 9, nombre: 'Marketing', usos: 3, color: '#F97316' },
+  { id: 10, nombre: 'Enfermería', usos: 5, color: '#A855F7' },
+  { id: 11, nombre: 'Educación', usos: 4, color: '#22D3EE' },
+  { id: 12, nombre: 'Comunicación', usos: 2, color: '#FB7185' },
+  { id: 13, nombre: 'Ing. Civil', usos: 6, color: '#FBBF24' },
+  { id: 14, nombre: 'Economía', usos: 3, color: '#34D399' },
+  { id: 15, nombre: 'Biología', usos: 4, color: '#818CF8' },
+  { id: 16, nombre: 'Química', usos: 2, color: '#F472B6' },
 ]);
 
 // Computed properties
