@@ -58,7 +58,7 @@ const searchTerm = ref('');
 
 const emit = defineEmits(['crearProyecto', 'search']);
 
-// Datos de usuario simulados (puedes reemplazar por los reales)
+// Datos de usuario simulados 
 const userName = ref('Persona Ejemplo');
 const userEmail = ref('persona@correo.com');
 
