@@ -140,7 +140,7 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useToast } from 'vue-toastification';
-import type { CreateTaskRequest, KanbanPhase } from '../types/index';
+import type { KanbanPhase } from '../types/index';
 
 const props = defineProps<{
   phaseId?: number | null;
@@ -173,17 +173,16 @@ const taskData = ref({
 async function fetchAvailablePhases() {
   try {
     const token = localStorage.getItem('access_token');
-    const response = await axios.get(`http://127.0.0.1:8000/api/v1/proyectos/${props.projectId}/phases`, {
+    const response = await axios.get(`http://localhost:8000/api/v1/proyectos/${props.projectId}/phases`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     availablePhases.value = response.data.phases || [];
   } catch (error) {
-    console.error('Error al cargar fases:', error);
     // Fallback con fases básicas
     availablePhases.value = [
-      { id: 1, name: 'Por hacer', color: '#8B5CF6', position: 0, project_id: props.projectId, tasks: [] },
-      { id: 2, name: 'En progreso', color: '#3B82F6', position: 1, project_id: props.projectId, tasks: [] },
-      { id: 3, name: 'Terminado', color: '#10B981', position: 2, project_id: props.projectId, tasks: [] }
+      { id: 1, name: 'Por hacer', color: '#ef4444', position: 0, project_id: props.projectId, tasks: [] },
+      { id: 2, name: 'En progreso', color: '#f59e0b', position: 1, project_id: props.projectId, tasks: [] },
+      { id: 3, name: 'Completado', color: '#10b981', position: 2, project_id: props.projectId, tasks: [] }
     ];
   }
 }
@@ -199,26 +198,59 @@ async function handleSubmit() {
 
   try {
     const token = localStorage.getItem('access_token');
-    
-    const payload: CreateTaskRequest = {
+    // Calcular posición basada en las tareas existentes de la fase
+    const selectedPhase = availablePhases.value.find(p => p.id === taskData.value.phase_id);
+    const nextPosition = selectedPhase?.tasks ? selectedPhase.tasks.length : 0;
+
+    // Crear payload básico - solo campos esenciales
+    const payload: any = {
       title: taskData.value.title.trim(),
-      description: taskData.value.description?.trim() || undefined,
       phase_id: taskData.value.phase_id!,
-      due_date: taskData.value.due_date || undefined,
-      priority: taskData.value.priority || undefined,
-      assignee: taskData.value.assignee?.trim() || undefined,
-      tags: taskData.value.tags || []
+      project_id: props.projectId,
+      position: nextPosition // Posición calculada automáticamente
     };
 
-    const response = await axios.post(`http://127.0.0.1:8000/api/v1/proyectos/${props.projectId}/tasks`, payload, {
+    // Agregar campos opcionales solo si tienen valor
+    if (taskData.value.description?.trim()) {
+      payload.description = taskData.value.description.trim();
+    }
+    
+    if (taskData.value.due_date) {
+      payload.due_date = taskData.value.due_date;
+    }
+    
+    if (taskData.value.priority) {
+      payload.priority = taskData.value.priority;
+    }
+    
+    if (taskData.value.assignee?.trim()) {
+      payload.assignee = taskData.value.assignee.trim();
+    }
+    
+    if (taskData.value.tags && taskData.value.tags.length > 0) {
+      payload.tags = taskData.value.tags;
+    }
+
+    // Debug: Mostrar payload que se envía
+    const response = await axios.post(`http://localhost:8000/api/v1/tareas/`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     toast.success('Tarea creada exitosamente');
     emit('created', response.data);
-  } catch (error) {
-    console.error('Error al crear tarea:', error);
-    toast.error('Error al crear la tarea. Inténtalo de nuevo.');
+  } catch (error: any) {
+    if (error.response?.status === 422) {
+      const validationErrors = error.response.data?.detail || [];
+      
+      if (Array.isArray(validationErrors)) {
+        const errorMessages = validationErrors.map((err: any) => `${err.loc?.join('.')}: ${err.msg}`).join(', ');
+        toast.error(`Error de validación: ${errorMessages}`);
+      } else {
+        toast.error(`Error de validación: ${error.response.data?.detail || 'Datos inválidos'}`);
+      }
+    } else {
+      toast.error('Error al crear la tarea. Inténtalo de nuevo.');
+    }
   } finally {
     isSubmitting.value = false;
   }

@@ -132,6 +132,7 @@ export interface KanbanTask {
   priority?: 'low' | 'medium' | 'high';
   assignee?: string;
   tags?: string[];
+  documents_count?: number; // Contador de documentos adjuntos
 }
 
 export interface KanbanPhase {
@@ -143,6 +144,8 @@ export interface KanbanPhase {
   project_id: number;
   tasks: KanbanTask[];
   task_count?: number;
+  documents_count?: number; // Contador de documentos adjuntos
+  loading_error?: boolean; // Indicador de error en carga de tareas
 }
 
 export interface KanbanBoard {
@@ -158,6 +161,8 @@ export interface CreateTaskRequest {
   title: string;
   description?: string;
   phase_id: number;
+  project_id?: number;
+  position?: number; // Agregar position requerido por backend
   due_date?: string;
   priority?: 'low' | 'medium' | 'high';
   assignee?: string;
@@ -186,6 +191,7 @@ export interface CreatePhaseRequest {
   description?: string;
   color: string;
   position: number;
+  project_id: number;
 }
 
 export interface UpdatePhaseRequest {

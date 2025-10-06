@@ -23,6 +23,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
     props: true,
   },
+  {
+    path: '/search-results',
+    name: 'SearchResults',
+    component: () => import('../views/SearchResults.vue'),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({

@@ -57,5 +57,4 @@
 </template>
 
 <script setup lang="ts">
-//  agregar lógica aquí 
 </script>

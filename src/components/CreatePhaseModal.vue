@@ -183,7 +183,8 @@ const phaseData = ref<CreatePhaseRequest>({
   name: '',
   description: '',
   color: '#8B5CF6',
-  position: 0
+  position: 0,
+  project_id: props.projectId
 });
 
 // Aplicar plantilla de etapa
@@ -214,10 +215,11 @@ async function handleSubmit() {
       name: phaseData.value.name.trim(),
       description: phaseData.value.description?.trim() || undefined,
       color: phaseData.value.color,
-      position: phaseData.value.position
+      position: phaseData.value.position,
+      project_id: phaseData.value.project_id
     };
 
-    await axios.post(`http://127.0.0.1:8000/api/v1/proyectos/${props.projectId}/phases`, payload, {
+    await axios.post(`http://localhost:8000/api/v1/fases/`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
