@@ -380,7 +380,7 @@ function loadTarjetasFromStorage() {
 async function fetchProjectData() {
   try {
     const token = localStorage.getItem('access_token');
-    const response = await axios.get(`http://127.0.0.1:8000/api/v1/proyectos/${proyectoId.value}`, {
+    const response = await axios.get(`/api/v1/proyectos/${proyectoId.value}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     projectTitle.value = response.data.name || 'Proyecto Sin Nombre';
@@ -397,16 +397,16 @@ async function fetchProjectData() {
 
 // Configuración para habilitar/deshabilitar funcionalidades según disponibilidad del backend
 const BACKEND_ENDPOINTS = {
-  uploadDocuments: false, // POST - Cambiar a true cuando esté implementado
-  fetchDocuments: false, // GET - Cambiar a true cuando esté implementado
-  deleteDocuments: false // DELETE - Cambiar a true cuando esté implementado
+  uploadDocuments: true, // POST - Habilitado según documentación del backend
+  fetchDocuments: true, // GET - Habilitado según documentación del backend  
+  deleteDocuments: true // DELETE - Habilitado según documentación del backend
 };
 
 // Función para cargar documentos del proyecto
 async function fetchDocumentos() {
   try {
     const token = localStorage.getItem('access_token');
-    const response = await axios.get(`http://127.0.0.1:8000/api/v1/proyectos/${proyectoId.value}/documentos`, {
+    const response = await axios.get(`/api/v1/proyectos/${proyectoId.value}/documentos`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     documentos.value = response.data || [];
@@ -496,7 +496,7 @@ async function eliminarDocumento(documentoId: number) {
   
   try {
     const token = localStorage.getItem('access_token');
-    await axios.delete(`http://127.0.0.1:8000/api/v1/proyectos/${proyectoId.value}/documentos/${documentoId}`, {
+    await axios.delete(`/api/v1/proyectos/${proyectoId.value}/documentos/${documentoId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     
@@ -582,7 +582,7 @@ function handleFileChange(e: Event) {
   uploadState.value = 'loading';
   
   const token = localStorage.getItem('access_token');
-  axios.post(`http://127.0.0.1:8000/api/v1/proyectos/${proyectoId.value}/documentos`, formData, {
+  axios.post(`/api/v1/proyectos/${proyectoId.value}/documentos`, formData, {
     headers: { 
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'

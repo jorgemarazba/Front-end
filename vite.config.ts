@@ -12,16 +12,26 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  server: {
-    port: 5173, // Cambia el puerto si lo necesitas
-    open: true, // Abre el navegador automáticamente
-    // proxy: {
-    //   '/api': 'http://localhost:3000', // Proxy para peticiones API
-    // },
+  
+server: {
+  host: 'localhost',
+  port: 5173,
+  open: true,
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8000',  // Cambia a localhost para consistencia
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/api/, '/api'),
+      secure: false,
+      followRedirects: true,  // Agrega esto para manejar redirecciones internamente
+    },
   },
+},
+
+// ... resto igual ...
   build: {
     outDir: 'dist',
-    sourcemap: false, // Cambia a true si necesitas mapas de fuente
+    sourcemap: false, // Cambia a true si necesita mapas de fuente
     minify: 'esbuild', // Usa esbuild para minificación rápida
     chunkSizeWarningLimit: 500, // Límite de tamaño para chunks
   },

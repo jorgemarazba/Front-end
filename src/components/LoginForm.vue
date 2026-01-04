@@ -77,7 +77,7 @@ const onLoginSubmit = async () => {
     body.append('username', email.value);
     body.append('password', password.value);
     const response = await axios.post<Token>(
-      'http://127.0.0.1:8000/api/v1/auth/login',
+      '/api/v1/auth/login',
       body,
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );

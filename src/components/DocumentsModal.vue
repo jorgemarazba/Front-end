@@ -93,12 +93,14 @@
                     {{ doc.filename }}
                   </p>
                   <p class="text-xs text-gray-500">
-                    {{ formatFileSize(doc.file_size) }} • {{ formatDate(doc.uploaded_at) }}
+                    <span v-if="!doc.isPlaceholder">{{ formatFileSize(doc.file_size) }} • {{ formatDate(doc.uploaded_at) }}</span>
+                    <span v-else class="text-orange-600 font-medium">Documento existente (backend no permite listarlo)</span>
                   </p>
                 </div>
               </div>
               <div class="flex items-center space-x-2">
                 <button 
+                  v-if="!doc.isPlaceholder"
                   @click="downloadDocument(doc.id)"
                   class="text-blue-600 hover:text-blue-800 transition-colors"
                   title="Descargar"
@@ -107,7 +109,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </button>
+                <span v-else class="text-gray-400 text-xs">Acciones no disponibles</span>
                 <button 
+                  v-if="!doc.isPlaceholder"
                   @click="deleteDocument(doc.id)"
                   class="text-red-600 hover:text-red-800 transition-colors"
                   title="Eliminar"
@@ -135,7 +139,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
 
@@ -145,6 +149,7 @@ interface Document {
   file_size: number
   file_type: string
   uploaded_at: string
+  isPlaceholder?: boolean // Propiedad opcional para documentos placeholder
 }
 
 const props = defineProps<{
@@ -158,6 +163,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: []
   uploaded: [doc: Document]
+  uploadError: [error: any, phaseId: number]
 }>()
 
 const toast = useToast()
@@ -222,8 +228,13 @@ async function uploadFile(file: File) {
       endpoint = `/api/v1/tareas/${props.taskId}/documentos`
     }
 
+    console.log('📤 Intentando subir archivo:')
+    console.log('- Archivo:', { name: file.name, size: file.size, type: file.type })
+    console.log('- Endpoint:', `${endpoint}`)
+    console.log('- Props:', { projectId: props.projectId, phaseId: props.phaseId, taskId: props.taskId })
+
     const token = localStorage.getItem('access_token')
-    const response = await axios.post(`http://localhost:8000${endpoint}`, formData, {
+    const response = await axios.post(`${endpoint}`, formData, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'
@@ -236,7 +247,34 @@ async function uploadFile(file: File) {
 
   } catch (error: any) {
     console.error('Error al subir documento:', error)
-    toast.error(error.response?.data?.detail || 'Error al subir el documento')
+    console.error('Detalles del error:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    })
+    console.error('📋 Respuesta completa del servidor:', error.response?.data)
+
+    let errorMessage = 'Error al subir el documento'
+    
+    if (error.response?.status === 400) {
+      const detail = error.response.data?.detail
+      console.error('🚨 Error 400 específico:', detail)
+      
+      if (detail && detail.includes('ya tiene un documento adjunto')) {
+        errorMessage = 'Esta fase ya tiene un documento adjunto. Solo se permite un documento por fase.'
+      } else {
+        errorMessage = `Error 400: ${detail || 'Solicitud incorrecta'}`
+      }
+    } else {
+      errorMessage = error.response?.data?.detail || 'Error al subir el documento'
+    }
+
+    toast.error(errorMessage)
+    
+    // Emitir error para que el componente padre pueda manejarlo
+    if (props.phaseId && error.response?.status === 400) {
+      emit('uploadError', error, props.phaseId)
+    }
   } finally {
     uploading.value = false
   }
@@ -246,7 +284,7 @@ async function uploadFile(file: File) {
 async function downloadDocument(documentId: number) {
   try {
     const token = localStorage.getItem('access_token')
-    const response = await axios.get(`http://localhost:8000/api/v1/documentos/${documentId}/download`, {
+    const response = await axios.get(`/api/v1/documentos/${documentId}/download`, {
       headers: { 'Authorization': `Bearer ${token}` },
       responseType: 'blob'
     })
@@ -280,7 +318,7 @@ async function deleteDocument(documentId: number) {
 
   try {
     const token = localStorage.getItem('access_token')
-    await axios.delete(`http://localhost:8000/api/v1/documentos/${documentId}`, {
+    await axios.delete(`/api/v1/documentos/${documentId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
 
@@ -306,15 +344,41 @@ async function loadDocuments() {
     }
 
     const token = localStorage.getItem('access_token')
-    const response = await axios.get(`http://localhost:8000${endpoint}`, {
+    const response = await axios.get(`${endpoint}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
 
-    documents.value = response.data
+    documents.value = response.data || []
 
-  } catch (error) {
-    console.error('Error al cargar documentos:', error)
-    toast.error('Error al cargar los documentos')
+  } catch (error: any) {
+    if (error.response?.status === 400 && 
+        error.response?.data?.detail?.includes('documento adjunto')) {
+      
+      // Crear documento placeholder para mostrar que existe
+      const placeholderDoc = {
+        id: -1, // ID temporal negativo
+        filename: 'Documento existente (no listable)',
+        file_size: 0,
+        file_type: 'application/pdf',
+        uploaded_at: new Date().toISOString(),
+        isPlaceholder: true
+      }
+      
+      // Limpiar array primero
+      documents.value = []
+      await nextTick()
+      
+      // Asignar placeholder
+      documents.value = [placeholderDoc]
+      await nextTick()
+      
+      toast.info('Esta fase tiene un documento adjunto. El backend no permite listarlo, pero está presente.')
+    } else if (error.response?.status !== 404) {
+      toast.error('Error al cargar los documentos')
+      documents.value = []
+    } else {
+      documents.value = []
+    }
   }
 }
 

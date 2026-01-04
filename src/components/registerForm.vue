@@ -115,7 +115,7 @@ async function onSubmit() {
   };
   try {
     console.log('Enviando registro:', payload);
-  await axios.post('http://127.0.0.1:8000/api/v1/auth/register', payload);
+  await axios.post('/api/v1/auth/register', payload);
     toast.success('¡Registro exitoso! Ahora inicia sesión.');
     router.push('/login');
   } catch (error: any) {

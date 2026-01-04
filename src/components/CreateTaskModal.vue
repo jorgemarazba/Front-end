@@ -173,7 +173,7 @@ const taskData = ref({
 async function fetchAvailablePhases() {
   try {
     const token = localStorage.getItem('access_token');
-    const response = await axios.get(`http://localhost:8000/api/v1/proyectos/${props.projectId}/phases`, {
+    const response = await axios.get(`/api/v1/proyectos/${props.projectId}/phases`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     availablePhases.value = response.data.phases || [];
@@ -232,7 +232,7 @@ async function handleSubmit() {
     }
 
     // Debug: Mostrar payload que se envía
-    const response = await axios.post(`http://localhost:8000/api/v1/tareas/`, payload, {
+    const response = await axios.post(`/api/v1/tareas/`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

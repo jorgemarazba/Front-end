@@ -133,6 +133,8 @@ export interface KanbanTask {
   assignee?: string;
   tags?: string[];
   documents_count?: number; // Contador de documentos adjuntos
+  subtasks_count?: number; // Contador total de subtareas
+  completed_subtasks?: number; // Contador de subtareas completadas
 }
 
 export interface KanbanPhase {

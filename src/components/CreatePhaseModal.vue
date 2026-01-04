@@ -219,7 +219,7 @@ async function handleSubmit() {
       project_id: phaseData.value.project_id
     };
 
-    await axios.post(`http://localhost:8000/api/v1/fases/`, payload, {
+    await axios.post(`/api/v1/fases/`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

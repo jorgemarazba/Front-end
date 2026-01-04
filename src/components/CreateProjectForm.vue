@@ -105,7 +105,7 @@ async function onSubmit() {
       status: status.value || "planning",
     };
     console.log('Payload enviado:', JSON.stringify(payload, null, 2));
-    const response = await axios.post('http://127.0.0.1:8000/api/v1/proyectos/', payload, {
+    const response = await axios.post('/api/v1/proyectos/', payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
     

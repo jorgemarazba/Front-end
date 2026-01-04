@@ -72,7 +72,7 @@ async function fetchProjects() {
   loading.value = true;
   try {
     const token = localStorage.getItem('access_token');
-    const response = await axios.get('http://127.0.0.1:8000/api/v1/proyectos/', {
+    const response = await axios.get('/api/v1/proyectos/', {
       headers: { Authorization: `Bearer ${token}` },
     });
   // Ordenar por id descendente (más reciente primero)

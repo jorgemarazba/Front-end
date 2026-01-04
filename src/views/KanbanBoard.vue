@@ -2,7 +2,7 @@
   <div class="flex h-screen">
     <!-- Sidebar -->
     <ProjectSidebar 
-      :projectId="proyectoId" 
+      :projectId="projectId" 
       @projectSelected="handleProjectSelected" 
     />
     
@@ -83,18 +83,7 @@
                     🔄
                   </button>
                 </div>
-                <!-- Botón de documentos de la fase -->
-                <button 
-                  @click="togglePhaseDocuments(phase.id)"
-                  class="text-white hover:bg-black hover:bg-opacity-20 rounded p-1 transition-colors relative"
-                  title="Documentos de la fase"
-                >
-                  📎
-                  <span v-if="phase.documents_count && phase.documents_count > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    {{ phase.documents_count }}
-                  </span>
-                </button>
-                <!-- Menú de la fase -->
+                <!-- Botón de opciones -->
                 <button 
                   @click="showPhaseMenu(phase.id)"
                   class="text-white hover:bg-black hover:bg-opacity-20 rounded p-1 transition-colors"
@@ -133,15 +122,75 @@
               <div 
                 v-for="task in phase.tasks" 
                 :key="task.id"
-                class="bg-gray-600 rounded-lg p-4 shadow-sm border border-gray-500 cursor-move hover:shadow-md transition-shadow text-white"
+                class="bg-gray-600 rounded-lg p-3 shadow-sm border border-gray-500 cursor-pointer hover:shadow-md hover:bg-gray-550 transition-all text-white"
                 draggable="true"
                 @dragstart="handleDragStart($event, task)"
                 @dragend="handleDragEnd"
+                @click="handleTaskClick($event, task)"
               >
-                <!-- Header de la tarea -->
-                <div class="flex justify-between items-start mb-2">
-                  <h4 class="font-semibold text-gray-100 text-sm leading-tight">{{ task.title }}</h4>
-                  <div class="flex items-center gap-1">
+                <!-- Header compacto con avatar y menú -->
+                <div class="flex justify-between items-center mb-2">
+                  <!-- Avatar de la persona encargada -->
+                  <div class="flex items-center gap-2">
+                    <div 
+                      class="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium"
+                      :class="getAvatarColor(task.assignee || '')"
+                    >
+                      {{ getAssigneeInitials(task.assignee || '') }}
+                    </div>
+                    <span class="text-xs text-gray-300">{{ task.assignee || 'Sin asignar' }}</span>
+                  </div>
+                  
+                  <!-- Menú de la tarea -->
+                  <button 
+                    @click.stop="showTaskMenu(task.id)"
+                    class="text-gray-300 hover:text-gray-100 transition-colors p-1 rounded"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Descripción (principal) -->
+                <p v-if="task.description" class="text-gray-100 text-sm mb-3 line-clamp-3 leading-relaxed">
+                  {{ task.description }}
+                </p>
+                <p v-else class="text-gray-400 text-sm mb-3 italic">Sin descripción</p>
+
+                <!-- Footer con fecha y contador de subtareas -->
+                <div class="flex justify-between items-center text-xs">
+                  <!-- Fecha de creación -->
+                  <div class="flex items-center gap-1 text-gray-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ formatShortDate(task.created_at) }}</span>
+                  </div>
+
+                  <!-- Indicadores de progreso -->
+                  <div class="flex items-center gap-2">
+                    <!-- Contador de subtareas -->
+                    <div v-if="task.subtasks_count && task.subtasks_count > 0" class="flex items-center gap-1 bg-gray-500 bg-opacity-50 px-2 py-1 rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                      <span class="text-gray-300">{{ task.completed_subtasks || 0 }}/{{ task.subtasks_count }}</span>
+                    </div>
+
+                    <!-- Indicador de documentos -->
+                    <button 
+                      v-if="task.documents_count && task.documents_count > 0"
+                      @click.stop="toggleTaskDocuments(task.id)"
+                      class="flex items-center gap-1 bg-blue-500 bg-opacity-50 px-2 py-1 rounded-full hover:bg-opacity-70 transition-colors"
+                      title="Documentos de la tarea"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                      <span class="text-blue-300">{{ task.documents_count }}</span>
+                    </button>
+
                     <!-- Indicador de prioridad -->
                     <div 
                       v-if="task.priority"
@@ -153,53 +202,7 @@
                       }"
                       :title="`Prioridad: ${task.priority}`"
                     ></div>
-                    <!-- Menú de la tarea -->
-                    <button 
-                      @click="showTaskMenu(task.id)"
-                      class="text-gray-300 hover:text-gray-100 transition-colors"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                      </svg>
-                    </button>
                   </div>
-                </div>
-
-                <!-- Descripción de la tarea -->
-                <p v-if="task.description" class="text-gray-300 text-xs mb-3 line-clamp-2">
-                  {{ task.description }}
-                </p>
-
-                <!-- Tags -->
-                <div v-if="task.tags && task.tags.length > 0" class="flex flex-wrap gap-1 mb-3">
-                  <span 
-                    v-for="tag in task.tags" 
-                    :key="tag"
-                    class="bg-blue-600 text-blue-200 text-xs px-2 py-1 rounded-full"
-                  >
-                    {{ tag }}
-                  </span>
-                </div>
-
-                <!-- Footer de la tarea -->
-                <div class="flex justify-between items-center text-xs text-gray-400">
-                  <div class="flex items-center gap-2">
-                    <span v-if="task.assignee">{{ task.assignee }}</span>
-                    <span v-if="task.due_date" class="text-orange-400">
-                      {{ formatDate(task.due_date) }}
-                    </span>
-                  </div>
-                  <!-- Botón de documentos de la tarea -->
-                  <button 
-                    @click="toggleTaskDocuments(task.id)"
-                    class="text-gray-300 hover:text-gray-100 transition-colors relative"
-                    title="Documentos de la tarea"
-                  >
-                    📎
-                    <span v-if="task.documents_count && task.documents_count > 0" class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center">
-                      {{ task.documents_count }}
-                    </span>
-                  </button>
                 </div>
               </div>
 
@@ -237,7 +240,7 @@
   <CreateTaskModal 
     v-if="showCreateTaskModal"
     :phaseId="selectedPhaseId"
-    :projectId="proyectoId"
+    :projectId="projectId"
     @close="showCreateTaskModal = false; selectedPhaseId = null"
     @created="handleTaskCreated"
   />
@@ -245,19 +248,9 @@
   <!-- Modal para crear fase -->
   <CreatePhaseModal 
     v-if="showCreatePhaseModal"
-    :projectId="proyectoId"
+    :projectId="projectId"
     @close="showCreatePhaseModal = false"
     @created="handlePhaseCreated"
-  />
-
-  <!-- Modal para documentos de fase -->
-  <DocumentsModal
-    v-if="documentPanelOpen !== null"
-    :phase-id="documentPanelOpen"
-    :title="`Documentos de la Fase`"
-    :subtitle="getPhaseNameById(documentPanelOpen)"
-    @close="documentPanelOpen = null"
-    @uploaded="handleDocumentUploaded"
   />
 
   <!-- Modal para documentos de tarea -->
@@ -269,10 +262,21 @@
     @close="taskDocumentPanelOpen = null"
     @uploaded="handleDocumentUploaded"
   />
+
+  <!-- Modal para detalle de tarea -->
+  <TaskDetailModal
+    v-if="showTaskDetailModal && selectedTask"
+    :isOpen="showTaskDetailModal"
+    :task="selectedTask"
+    @close="closeTaskDetail"
+    @editTask="handleTaskUpdated"
+    @deleteTask="handleTaskDeleted"
+    @openDocuments="toggleTaskDocuments"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { useToast } from 'vue-toastification';
@@ -288,6 +292,7 @@ import ProjectStagesNavbar from '@/components/ProjectStagesNavbar.vue';
 import CreateTaskModal from '@/components/CreateTaskModal.vue';
 import CreatePhaseModal from '@/components/CreatePhaseModal.vue';
 import DocumentsModal from '@/components/DocumentsModal.vue';
+import TaskDetailModal from '@/components/TaskDetailModal.vue';
 
 // Tipos
 import type { KanbanBoard, KanbanTask } from '../types/index';
@@ -299,7 +304,7 @@ const router = useRouter();
 const toast = useToast();
 
 // Estados reactivos
-const proyectoId = ref(Number(props.id));
+const projectId = ref(Number(props.id));
 const projectTitle = ref<string>('Cargando proyecto...');
 const loading = ref(false);
 const kanbanBoard = ref<KanbanBoard | null>(null);
@@ -310,36 +315,30 @@ const showCreateTaskModal = ref(false);
 const showCreatePhaseModal = ref(false);
 const selectedPhaseId = ref<number | null>(null);
 
-// Estados para documentos
-const documentPanelOpen = ref<number | null>(null);
+// Estados para documentos (solo para tareas)
 const taskDocumentPanelOpen = ref<number | null>(null);
+
+// Estados para modal de detalle de tarea
+const showTaskDetailModal = ref(false);
+const selectedTask = ref<KanbanTask | null>(null);
 
 // Función para obtener icono de fase (reutilizando del sistema actual)
 function getPhaseIcon(phaseName: string): string {
   return getStageIcon(phaseName);
 }
 
-// Función para formatear fecha
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('es-ES', { 
-    month: 'short', 
-    day: 'numeric' 
-  });
-}
-
 // Cargar datos del proyecto
 async function fetchProjectData() {
   try {
     const token = localStorage.getItem('access_token');
-    const response = await axios.get(`http://localhost:8000/api/v1/proyectos/${proyectoId.value}`, {
+    const response = await axios.get(`/api/v1/proyectos/${projectId.value}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     projectTitle.value = response.data.name || 'Proyecto sin título';
   } catch (error) {
     console.error('Error al cargar proyecto:', error);
     toast.error('Error al cargar los datos del proyecto');
-    projectTitle.value = `Proyecto ${proyectoId.value}`;
+    projectTitle.value = `Proyecto ${projectId.value}`;
   }
 }
 
@@ -350,7 +349,7 @@ async function fetchKanbanBoard() {
     const token = localStorage.getItem('access_token');
     
     // Cargar información básica de las fases
-    const phasesResponse = await axios.get(`http://localhost:8000/api/v1/proyectos/${proyectoId.value}/phases`, {
+    const phasesResponse = await axios.get(`/api/v1/proyectos/${projectId.value}/phases`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     
@@ -360,7 +359,7 @@ async function fetchKanbanBoard() {
     // Carga paralela de tareas para cada fase
     const taskPromises = phases.map(async (phase: any) => {
       try {
-        const tasksResponse = await axios.get(`http://localhost:8000/api/v1/fases/${phase.id}/tareas`, {
+        const tasksResponse = await axios.get(`/api/v1/fases/${phase.id}/tareas`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         return {
@@ -409,14 +408,18 @@ async function fetchKanbanBoard() {
       toast.warning(`Tablero cargado con ${phasesWithErrors} fases con errores`);
     } else {
       toast.success('Tablero Kanban cargado exitosamente');
-    }  } catch (error) {
+    }
+
+    // AGREGAR ESTA LÍNEA para forzar re-renderizado:
+    await nextTick();
+  } catch (error) {
     console.error('💥 Error crítico al cargar tablero Kanban:', error);
     toast.error('Error al cargar el tablero Kanban');
     
     // Fallback: Crear estructura básica vacía
     kanbanBoard.value = {
       id: 0,
-      project_id: proyectoId.value,
+      project_id: projectId.value,
       phases: [],
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
@@ -436,7 +439,7 @@ async function refreshBoard() {
 async function refreshPhase(phaseId: number) {
   try {
     const token = localStorage.getItem('access_token');
-    const response = await axios.get(`http://localhost:8000/api/v1/fases/${phaseId}/tareas`, {
+    const response = await axios.get(`/api/v1/fases/${phaseId}/tareas`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     
@@ -471,6 +474,14 @@ function handleDragEnd() {
   draggedTask.value = null;
 }
 
+// Handler para click en tarea (sin interferir con drag)
+function handleTaskClick(_event: MouseEvent, task: KanbanTask) {
+  // Solo abrir modal si no se está arrastrando
+  if (!draggedTask.value) {
+    openTaskDetail(task);
+  }
+}
+
 async function handleDrop(event: DragEvent, targetPhaseId: number) {
   event.preventDefault();
   
@@ -480,7 +491,7 @@ async function handleDrop(event: DragEvent, targetPhaseId: number) {
 
   try {
     const token = localStorage.getItem('access_token');
-    await axios.put(`http://localhost:8000/api/v1/tareas/${draggedTask.value.id}`, {
+    await axios.put(`/api/v1/tareas/${draggedTask.value.id}`, {
       phase_id: targetPhaseId
     }, {
       headers: { Authorization: `Bearer ${token}` },
@@ -545,15 +556,88 @@ function handleProjectSelected(newProjectId: number) {
   router.push(`/proyecto/${newProjectId}`);
 }
 
-// Mostrar menús contextuales (placeholder)
+// Mostrar menús contextuales
 function showTaskMenu(taskId: number) {
+  // TODO: Implementar menú contextual de tarea
   console.log('Mostrar menú de tarea:', taskId);
-  
 }
 
 function showPhaseMenu(phaseId: number) {
+  // TODO: Implementar menú contextual de fase
   console.log('Mostrar menú de fase:', phaseId);
-  // Implementar menú contextual de fase
+}
+
+// Función para abrir modal de detalle de tarea
+function openTaskDetail(task: KanbanTask) {
+  selectedTask.value = task;
+  showTaskDetailModal.value = true;
+}
+
+// Función para cerrar modal de detalle de tarea
+function closeTaskDetail() {
+  selectedTask.value = null;
+  showTaskDetailModal.value = false;
+}
+
+// Función para manejar actualización de tarea desde el modal
+async function handleTaskUpdated(_taskId: number) {
+  try {
+    // Cerrar el modal y recargar el tablero para obtener los datos actualizados
+    closeTaskDetail();
+    await fetchKanbanBoard();
+    toast.success('Tarea actualizada exitosamente');
+  } catch (error) {
+    console.error('Error al actualizar tarea:', error);
+    toast.error('Error al actualizar la tarea');
+  }
+}
+
+// Función para manejar eliminación de tarea desde el modal
+function handleTaskDeleted(taskId: number) {
+  // Encontrar y eliminar la tarea del tablero
+  if (kanbanBoard.value) {
+    for (const phase of kanbanBoard.value.phases) {
+      const taskIndex = phase.tasks.findIndex(t => t.id === taskId);
+      if (taskIndex !== -1) {
+        phase.tasks.splice(taskIndex, 1);
+        break;
+      }
+    }
+  }
+  
+  closeTaskDetail();
+  toast.success('Tarea eliminada exitosamente');
+}
+
+// Función para formatear fecha en formato corto
+function formatShortDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-ES', { 
+    day: 'numeric',
+    month: 'short'
+  });
+}
+
+// Función para obtener iniciales del asignado
+function getAssigneeInitials(assignee: string): string {
+  if (!assignee) return 'N/A';
+  return assignee.split(' ')
+    .map(name => name.charAt(0).toUpperCase())
+    .slice(0, 2)
+    .join('');
+}
+
+// Función para obtener color del avatar basado en el nombre
+function getAvatarColor(assignee: string): string {
+  if (!assignee) return 'bg-gray-500';
+  
+  const colors = [
+    'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-red-500',
+    'bg-yellow-500', 'bg-indigo-500', 'bg-pink-500', 'bg-teal-500'
+  ];
+  
+  const charCode = assignee.charCodeAt(0);
+  return colors[charCode % colors.length];
 }
 
 // Función para abrir modal de crear tarea con fase preseleccionada
@@ -562,35 +646,21 @@ function openCreateTaskModal(phaseId: number) {
   showCreateTaskModal.value = true;
 }
 
-// Métodos para manejo de documentos
-function togglePhaseDocuments(phaseId: number) {
-  if (documentPanelOpen.value === phaseId) {
-    documentPanelOpen.value = null;
-  } else {
-    documentPanelOpen.value = phaseId;
-    // TODO: Cargar documentos de la fase
-    console.log('Cargar documentos de la fase:', phaseId);
-  }
-}
-
+// Métodos para manejo de documentos de tareas
 function toggleTaskDocuments(taskId: number) {
   if (taskDocumentPanelOpen.value === taskId) {
     taskDocumentPanelOpen.value = null;
   } else {
     taskDocumentPanelOpen.value = taskId;
-    // TODO: Cargar documentos de la tarea
-    console.log('Cargar documentos de la tarea:', taskId);
+    // Los documentos se cargan automáticamente cuando se abre el modal
   }
 }
 
-// Métodos auxiliares para los modals de documentos
-function getPhaseNameById(phaseId: number): string {
-  const phase = kanbanBoard.value?.phases.find(p => p.id === phaseId);
-  return phase ? phase.name : 'Fase';
-}
-
+// Métodos auxiliares para los modals de documentos de tareas
 function getTaskNameById(taskId: number): string {
-  for (const phase of kanbanBoard.value?.phases || []) {
+  if (!kanbanBoard.value?.phases) return 'Tarea';
+  
+  for (const phase of kanbanBoard.value.phases) {
     const task = phase.tasks.find(t => t.id === taskId);
     if (task) return task.title;
   }
@@ -611,7 +681,7 @@ function loadProjectData() {
 // Observar cambios en el prop id para recargar datos
 watch(() => props.id, (newId) => {
   if (newId) {
-    proyectoId.value = Number(newId);
+    projectId.value = Number(newId);
     loadProjectData();
   }
 }, { immediate: false });

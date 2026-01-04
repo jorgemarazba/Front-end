@@ -189,7 +189,7 @@ async function performSearch() {
     const token = localStorage.getItem('access_token')
     
     // TEMPORAL: Usar endpoint de proyectos existente para simular búsqueda
-    const response = await axios.get(`http://localhost:8000/api/v1/proyectos/`, {
+    const response = await axios.get(`/api/v1/proyectos/`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     

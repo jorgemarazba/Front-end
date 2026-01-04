@@ -282,7 +282,7 @@ async function fetchProyectosActivos() {
       return;
     }
 
-    const response = await axios.get('http://127.0.0.1:8000/api/v1/proyectos', {
+    const response = await axios.get('/api/v1/proyectos', {
       headers: { Authorization: `Bearer ${token}` },
     });
     

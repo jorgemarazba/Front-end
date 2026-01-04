@@ -6,6 +6,11 @@ const routes: RouteRecordRaw[] = [
   { path: '/', component: () => import('../views/Home.vue') },
   { path: '/register', component: () => import('../views/Register.vue') },
   { path: '/login', component: () => import('../views/Login.vue') },
+  { path: '/recuperar', component: () => import('../views/Login.vue') }, // Ruta temporal para recuperar contraseña
+  { path: '/privacidad', component: () => import('../views/Home.vue') }, // Ruta temporal para política de privacidad
+  { path: '/terminos', component: () => import('../views/Home.vue') }, // Ruta temporal para términos y condiciones
+  { path: '/perfil', component: () => import('../views/LaboratorioIN.vue'), meta: { requiresAuth: true } }, // Ruta temporal para perfil
+  { path: '/configuracion', component: () => import('../views/LaboratorioIN.vue'), meta: { requiresAuth: true } }, // Ruta temporal para configuración
   {
     path: '/dashboard',
     component: () => import('../views/LaboratorioIN.vue'),
